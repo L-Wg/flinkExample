@@ -12,6 +12,8 @@ public class UserBehaviorSchema {
 
     private static Logger logger=Logger.getLogger(UserBehaviorSchema.class);
 
+    public UserBehaviorSchema(){}
+
     public UserBehaviorSchema(long userId,long itemId,int categoryId,
                               String behavior,long timestamp){
         this.userId=userId;

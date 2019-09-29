@@ -77,13 +77,13 @@ public class Flink2HbaseMain {
                 properties
         ));
 
-        DataStream<List<ResultEvent>> resultSource=dataStream.assignTimestampsAndWatermarks(new customWaterExtractor())
-                .filter(new FilterFunction<UserBehaviorSchema>() {
+        DataStream<List<ResultEvent>> resultSource=dataStream.filter(new FilterFunction<UserBehaviorSchema>() {
             @Override
             public boolean filter(UserBehaviorSchema userBehaviorSchema) throws Exception {
                 return userBehaviorSchema.behavior.equals("pv");
             }
         })
+                .assignTimestampsAndWatermarks(new customWaterExtractor())
                 .keyBy("itemId")
                 .timeWindow(Time.minutes(60),Time.minutes(5))
                 .aggregate(new customAggFunction(),new customWindowFunciton())

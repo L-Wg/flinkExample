@@ -9,6 +9,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class CustomHbaseSink extends RichSinkFunction<List<ResultEvent>> {
     public void invoke(List<ResultEvent> events,Context ctx) throws IOException {
 
         for(ResultEvent event:events){
-            Put put=new Put(Bytes.toBytes(String.valueOf(event.windowEndTime)+String.valueOf(event.ranking)));
+            Put put=new Put(Bytes.toBytes(String.valueOf(new Timestamp(event.windowEndTime))+String.valueOf(event.ranking)));
             put.addColumn(Bytes.toBytes(cf),Bytes.toBytes("itemId"),Bytes.toBytes(event.itemId));
             put.addColumn(Bytes.toBytes(cf),Bytes.toBytes("countPv"),Bytes.toBytes(event.countPv));
             putArrayList.add(put);
@@ -71,6 +72,7 @@ public class CustomHbaseSink extends RichSinkFunction<List<ResultEvent>> {
 
     @Override
     public void close() throws Exception {
+        logger.debug("******call close()*********");
         super.close();
         if(table!=null){
             table.close();
